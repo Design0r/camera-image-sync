@@ -39,11 +39,45 @@ style_sheet = """
     }
     QListView:item:selected {
         background-color: #666666;
+        border: 1px solid black;
     }
 
+    QScrollBar:vertical {
+        background-color: #F0F0F0;
+        width: 16px;
+        margin: 0px 0px 0px 0px;
+    }
+    
+    QScrollBar::handle:vertical {
+        background-color: #444444;
+        min-height: 20px;
+    }
+    
+    QScrollBar::add-line:vertical,
+    QScrollBar::sub-line:vertical {
+        background: none;
+    }
+    
+    QScrollBar:horizontal {
+        background-color: #333333;
+        height: 16px;
+        margin: 0px 0px 0px 0px;
+    }
+    
+    QScrollBar::handle:horizontal {
+        background-color: #444444;
+        min-width: 20px;
+    }
+    
+    QScrollBar::add-line:horizontal,
+    QScrollBar::sub-line:horizontal {
+        background: none;
+    }
+    
     /* QLineEdit */
     QLineEdit {
         background-color: #444444;
+        selection-background-color: #507187;
         color: #ffffff;
         border: none;
         border-radius: 5px;
