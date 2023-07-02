@@ -1,14 +1,25 @@
-from PySide6.QtWidgets import QMainWindow, QVBoxLayout, QLabel, QPushButton, QWidget, QListView, QFileDialog, QLineEdit, QProgressBar, QHBoxLayout
+from PySide6.QtWidgets import (
+    QMainWindow,
+    QVBoxLayout,
+    QLabel,
+    QPushButton,
+    QWidget,
+    QListView,
+    QFileDialog,
+    QLineEdit,
+    QProgressBar,
+    QHBoxLayout,
+)
 from PySide6.QtGui import QFont, QIcon
 from PySide6.QtCore import Qt, Signal, QSize
 from View.separator import Separator
 from View.style import style_sheet
+from info import NAME, VERSION
 import os
 import pathlib
 
 
 class MainWindow(QMainWindow):
-
     add_folder_signal = Signal(str)
     remove_folder_signal = Signal(int)
     copy_images_signal = Signal((str, str))
@@ -33,8 +44,8 @@ class MainWindow(QMainWindow):
 
         self.list_view = QListView()
 
-        self.target_folder_edit = QLineEdit("Path/To/PhotoLibrary")
-        self.date_format_edit = QLineEdit("YY_MM_DD")
+        self.target_folder_edit = QLineEdit()
+        self.date_format_edit = QLineEdit()
 
         add_folder_btn = QPushButton("Add Folder")
         remove_folder_btn = QPushButton("Remove Folder")
@@ -55,7 +66,7 @@ class MainWindow(QMainWindow):
 
         # ========================= Set Widget Properties =========================
         self.setFixedSize(400, 500)
-        self.setWindowTitle("Camera Image Sync - 1.0")
+        self.setWindowTitle(f"{NAME} - {VERSION}")
         self.setWindowIcon(QIcon(icon_path))
         self.setStyleSheet(style_sheet)
 
@@ -136,7 +147,9 @@ class MainWindow(QMainWindow):
         self.images_found_label.setText(f"Images found: {images} - Synced: {unsynced}")
 
     def copy_images(self):
-        self.copy_images_signal.emit(self.target_folder_edit.text(), self.date_format_edit.text())
+        self.copy_images_signal.emit(
+            self.target_folder_edit.text(), self.date_format_edit.text()
+        )
 
     def update_progress_label(self, update):
         self.progress_bar.setValue(int(update))

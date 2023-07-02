@@ -6,8 +6,11 @@ import json
 
 
 class Controller:
+    image_types = [".jpg", ".jpeg", ".png", ".rw2"]
+    DEFAULT_DATE_FORMAT = "YY_MM_DD"
+    DEFAULT_PATH = "Path/To/PhotoLibrary"
+
     def __init__(self, model, view) -> None:
-        self.image_types = [".jpg", ".jpeg", ".png", ".rw2"]
         self.model = model
         self.view = view
 
@@ -49,7 +52,12 @@ class Controller:
             if not os.path.exists(folder):
                 return
 
-            files = [os.path.join(path, file) for path, _, files in os.walk(folder) for file in files if pathlib.Path(os.path.join(path, file)).suffix in self.image_types]
+            files = [
+                os.path.join(path, file)
+                for path, _, files in os.walk(folder)
+                for file in files
+                if pathlib.Path(os.path.join(path, file)).suffix in self.image_types
+            ]
             all_files += files
 
         self.model.images = all_files
@@ -60,7 +68,6 @@ class Controller:
         for image in self.model.images:
             c_time = self.get_creation_time(image)
             existing_folder = self.check_date(c_time, self.model.target_path)
-
             if not existing_folder:
                 return
 
@@ -88,7 +95,9 @@ class Controller:
                 shutil.copy2(image, target_folder)
                 print("copying", image, "to", target_folder)
 
-            self.view.update_progress_label(int(((idx + 1) / len(self.model.images)) * 100))
+            self.view.update_progress_label(
+                int(((idx + 1) / len(self.model.images)) * 100)
+            )
         self.get_image_count()
 
     def get_creation_time(self, image):
@@ -98,7 +107,7 @@ class Controller:
         return c_time
 
     def check_date(self, date, target_path):
-        if not os.path.exists():
+        if not os.path.exists(target_path):
             return
         for folder in os.listdir(target_path):
             if date in folder:
@@ -116,15 +125,19 @@ class Controller:
             if "Y" in i.upper():
                 year_format = i
                 break
-            else:
-                year_format = "YY"
+
+            year_format = "YY"
 
         if year_format.upper() == "YYYY":
             year_replace = "%Y"
         elif year_format.upper() == "YY":
             year_replace = "%y"
 
-        formatted_date = date.strftime(input_format.replace(year_format, year_replace).replace("MM", "%m").replace("DD", "%d"))
+        formatted_date = date.strftime(
+            input_format.replace(year_format, year_replace)
+            .replace("MM", "%m")
+            .replace("DD", "%d")
+        )
         return formatted_date
 
     def set_target_path(self, path):
@@ -143,21 +156,46 @@ class Controller:
             pass
 
     def load_config(self):
-        print("Config Loaded")
         try:
-            with open('config.json', 'r') as f:
-                config_data = json.load(f)
-                self.image_types = config_data["image_types"] if config_data["date_format"] != "" else self.image_types
+            with open("config.json", "r", encoding="utf-8") as file:
+                config_data = json.load(file)
+                self.image_types = (
+                    config_data["image_types"]
+                    if config_data["date_format"] != ""
+                    else self.image_types
+                )
                 self.model.folders = config_data["source_folders"]
-                self.model.date_format = config_data["date_format"] if config_data["date_format"] != "" else "YY_MM_DD"
-                self.model.target_path = config_data["target_path"] if config_data["target_path"] != "" else "Path/To/PhotoLibrary"
+                self.model.date_format = (
+                    config_data["date_format"]
+                    if config_data["date_format"] != ""
+                    else self.DEFAULT_DATE_FORMAT
+                )
+                self.model.target_path = (
+                    config_data["target_path"]
+                    if config_data["target_path"] != ""
+                    else self.DEFAULT_PATH
+                )
 
                 self.get_image_count()
-        except Exception:
-            pass
+                print("Config Loaded")
+        except Exception as error:
+            print(f"Error Loading Config: {error}")
+            print("Trying to create new Config...")
+            try:
+                self.save_config()
+                self.load_config()
+            except Exception as error2:
+                print(f"Error creating Config: {error2}")
 
     def save_config(self):
+        with open("config.json", "w", encoding="utf-8") as file:
+            data = {
+                "source_folders": self.model.folders,
+                "date_format": self.model.date_format,
+                "target_path": self.model.target_path
+                if self.model.target_path
+                else self.DEFAULT_PATH,
+                "image_types": self.image_types,
+            }
+            json.dump(data, file)
         print("Config Saved")
-        with open('config.json', 'w') as f:
-            data = {"source_folders": self.model.folders, "date_format": self.model.date_format, "target_path": self.model.target_path, "image_types": self.image_types}
-            json.dump(data, f)
