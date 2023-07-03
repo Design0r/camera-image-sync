@@ -1,8 +1,7 @@
 from PySide6.QtCore import QAbstractListModel, Qt, Signal
 
 
-class Model(QAbstractListModel):
-
+class ListModel(QAbstractListModel):
     images_changed = Signal((int, int))
     date_format_changed = Signal(str)
     target_path_changed = Signal(str)

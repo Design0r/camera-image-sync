@@ -5,7 +5,7 @@ import shutil
 import json
 
 
-class Controller:
+class MainController:
     image_types = [".jpg", ".jpeg", ".png", ".rw2"]
     DEFAULT_DATE_FORMAT = "YY_MM_DD"
     DEFAULT_PATH = "Path/To/PhotoLibrary"
@@ -40,6 +40,8 @@ class Controller:
         self.save_config()
 
     def remove_folder(self, index) -> None:
+        if not index:
+            return
         self.model.folders.pop(index)
         self.model.layoutChanged.emit()
         self.get_image_count()
