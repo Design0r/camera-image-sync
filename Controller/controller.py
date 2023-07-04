@@ -163,7 +163,7 @@ class MainController:
                 config_data = json.load(file)
                 self.image_types = (
                     config_data["image_types"]
-                    if config_data["date_format"] != ""
+                    if config_data["image_types"] != ""
                     else self.image_types
                 )
                 self.model.folders = config_data["source_folders"]
