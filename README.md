@@ -12,18 +12,21 @@ Camera Image Sync is a Python program designed to simplify the process of synchr
 
 ## Dependencies
 - **Python 3.11.3:** Camera Image Sync is developed using Python 3.11.3. Make sure you have Python 3.11.3 installed on your system.
-- **PySide6:** The program relies on the PySide6 library to create the graphical user interface. Install PySide6 using `pip install PySide6`.
-
+- **PySide6:** The program relies on the PySide6 library to create the graphical user interface
 ## Getting Started
 1. Ensure you have Python 3.11.3 installed on your system. If not, download and install it from the official Python website.
 2. Install the PySide6 library by running the following command in your terminal:
 
-```
+```shell
 pip install PySide6
 ```
 
 3. Download the Camera Image Sync program from the provided source or repository.
-4. Open the program in your preferred Python integrated development environment (IDE) or text editor.****
+
+```shell
+git clone https://github.com/Design0r/Camera_Image_Sync.git
+```
+4. Open the program in your preferred Python integrated development environment (IDE) or text editor.
 5. Customize your date naming convention by modifying the relevant settings in the program's user interface.
 6. Connect your camera to your computer and ensure it is recognized.
 7. Run the program, and it will automatically sync the pictures on your camera with your picture library, organizing them based on the specified date naming convention.
