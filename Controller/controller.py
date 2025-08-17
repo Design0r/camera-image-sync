@@ -1,8 +1,11 @@
+import datetime
+import json
 import os
 import pathlib
-import datetime
 import shutil
-import json
+
+from Model.model import ListModel
+from View.main_window import MainWindow
 
 
 class MainController:
@@ -10,7 +13,7 @@ class MainController:
     DEFAULT_DATE_FORMAT = "YY_MM_DD"
     DEFAULT_PATH = "Path/To/PhotoLibrary"
 
-    def __init__(self, model, view) -> None:
+    def __init__(self, model: ListModel, view: MainWindow) -> None:
         self.model = model
         self.view = view
 
@@ -39,7 +42,7 @@ class MainController:
         self.get_image_count()
         self.save_config()
 
-    def remove_folder(self, index) -> None:
+    def remove_folder(self, index: int) -> None:
         if not index:
             return
         self.model.folders.pop(index)
@@ -48,7 +51,7 @@ class MainController:
         self.save_config()
 
     def get_image_count(self):
-        all_files = []
+        all_files: list[str] = []
 
         for folder in self.model.folders:
             if not os.path.exists(folder):
@@ -66,7 +69,7 @@ class MainController:
         self.check_unsynced()
 
     def check_unsynced(self):
-        unsynced_images = []
+        unsynced_images: list[str] = []
         for image in self.model.images:
             c_time = self.get_creation_time(image)
             existing_folder = self.check_date(c_time, self.model.target_path)
@@ -102,25 +105,27 @@ class MainController:
             )
         self.get_image_count()
 
-    def get_creation_time(self, image):
+    def get_creation_time(self, image: str):
         c_time = os.path.getctime(image)
         c_time = datetime.datetime.fromtimestamp(c_time)
         c_time = self.format_date(self.model.date_format, c_time)
         return c_time
 
-    def check_date(self, date, target_path):
+    def check_date(self, date: str, target_path: str):
         if not os.path.exists(target_path):
             return
         for folder in os.listdir(target_path):
             if date in folder:
                 return os.path.join(target_path, folder)
 
-    def format_date(self, input_format, date):
+    def format_date(self, input_format: str, date: datetime.datetime):
         spacing = "_"
         if "-" in input_format:
             spacing = "-"
         elif "_" in input_format:
             spacing = "_"
+
+        year_format = "YY"
 
         split_format = input_format.split(spacing)
         for i in split_format:
@@ -130,6 +135,7 @@ class MainController:
 
             year_format = "YY"
 
+        year_replace = "%y"
         if year_format.upper() == "YYYY":
             year_replace = "%Y"
         elif year_format.upper() == "YY":
@@ -142,14 +148,14 @@ class MainController:
         )
         return formatted_date
 
-    def set_target_path(self, path):
+    def set_target_path(self, path: str):
         if not os.path.exists(path):
             return
         self.model.target_path = path
         self.get_image_count()
         self.save_config()
 
-    def set_date_format(self, date_format):
+    def set_date_format(self, date_format: str):
         self.model.date_format = date_format
         try:
             self.get_image_count()
@@ -199,5 +205,5 @@ class MainController:
                 else self.DEFAULT_PATH,
                 "image_types": self.image_types,
             }
-            json.dump(data, file)
+            json.dump(data, file, indent=4)
         print("Config Saved")

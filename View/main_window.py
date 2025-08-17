@@ -1,32 +1,35 @@
-from PySide6.QtWidgets import (
-    QMainWindow,
-    QVBoxLayout,
-    QLabel,
-    QPushButton,
-    QWidget,
-    QListView,
-    QFileDialog,
-    QLineEdit,
-    QProgressBar,
-    QHBoxLayout,
-)
-from PySide6.QtGui import QFont, QIcon
-from PySide6.QtCore import Qt, Signal, QSize
-from View.separator import Separator
-from View.style import style_sheet
-from info import NAME, VERSION
 import os
 import pathlib
+from typing import Optional
+
+from PySide6.QtCore import QSize, Qt, Signal
+from PySide6.QtGui import QFont, QIcon
+from PySide6.QtWidgets import (
+    QFileDialog,
+    QHBoxLayout,
+    QLabel,
+    QLineEdit,
+    QListView,
+    QMainWindow,
+    QProgressBar,
+    QPushButton,
+    QVBoxLayout,
+    QWidget,
+)
+
+from info import NAME, VERSION
+from View.separator import Separator
+from View.style import style_sheet
 
 
 class MainWindow(QMainWindow):
     add_folder_signal = Signal(str)
     remove_folder_signal = Signal(int)
-    copy_images_signal = Signal((str, str))
+    copy_images_signal = Signal(tuple)
     target_path_edit_signal = Signal(str)
     date_format_edit_signal = Signal(str)
 
-    def __init__(self, parent=None) -> None:
+    def __init__(self, parent: Optional[QWidget] = None) -> None:
         super().__init__(parent)
 
     def init_ui(self):
@@ -92,8 +95,8 @@ class MainWindow(QMainWindow):
         source_folder_label.setAlignment(Qt.AlignmentFlag.AlignCenter)
         target_folder_label.setAlignment(Qt.AlignmentFlag.AlignCenter)
         self.images_found_label.setAlignment(Qt.AlignmentFlag.AlignCenter)
-        self.progress_bar.setAlignment(Qt.AlignCenter)
-        date_format_label.setAlignment(Qt.AlignCenter)
+        self.progress_bar.setAlignment(Qt.AlignmentFlag.AlignCenter)
+        date_format_label.setAlignment(Qt.AlignmentFlag.AlignCenter)
 
         font.setPointSize(13)
         source_folder_label.setFont(font)
@@ -143,7 +146,7 @@ class MainWindow(QMainWindow):
         row = row[0].row()
         self.remove_folder_signal.emit(row)
 
-    def update_images_label(self, images, unsynced):
+    def update_images_label(self, images: int, unsynced: int):
         self.images_found_label.setText(f"Images found: {images} - Synced: {unsynced}")
 
     def copy_images(self):
@@ -151,16 +154,16 @@ class MainWindow(QMainWindow):
             self.target_folder_edit.text(), self.date_format_edit.text()
         )
 
-    def update_progress_label(self, update):
+    def update_progress_label(self, update: float):
         self.progress_bar.setValue(int(update))
 
-    def set_date_format(self, date_format):
+    def set_date_format(self, date_format: str):
         self.date_format_edit.setText(date_format)
 
     def date_format_changed(self):
         self.date_format_edit_signal.emit(self.date_format_edit.text())
 
-    def set_target_folder(self, folder):
+    def set_target_folder(self, folder: str):
         self.target_folder_edit.setText(folder)
 
     def target_folder_changed(self):

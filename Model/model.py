@@ -2,20 +2,20 @@ from PySide6.QtCore import QAbstractListModel, Qt, Signal
 
 
 class ListModel(QAbstractListModel):
-    images_changed = Signal((int, int))
+    images_changed = Signal((str, str))
     date_format_changed = Signal(str)
     target_path_changed = Signal(str)
 
     def __init__(self) -> None:
-        self.folders = []
-        self._date_format = ""
-        self._target_path = ""
-        self._images = []
-        self._unsynced_images = []
+        self.folders: list[str] = []
+        self._date_format: str = ""
+        self._target_path: str = ""
+        self._images: list[str] = []
+        self._unsynced_images: list[str] = []
         super().__init__()
 
     def data(self, index, role):
-        if role == Qt.DisplayRole:
+        if role == Qt.ItemDataRole.DisplayRole:
             # See below for the data structure.
             text = self.folders[index.row()]
             # Return the todo text only.
