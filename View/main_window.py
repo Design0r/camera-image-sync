@@ -25,7 +25,7 @@ from View.style import style_sheet
 class MainWindow(QMainWindow):
     add_folder_signal = Signal(str)
     remove_folder_signal = Signal(int)
-    copy_images_signal = Signal(tuple)
+    copy_images_signal = Signal(str, str)
     target_path_edit_signal = Signal(str)
     date_format_edit_signal = Signal(str)
 

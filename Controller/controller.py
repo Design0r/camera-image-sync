@@ -61,7 +61,7 @@ class MainController:
                 os.path.join(path, file)
                 for path, _, files in os.walk(folder)
                 for file in files
-                if pathlib.Path(os.path.join(path, file)).suffix in self.image_types
+                if pathlib.Path(path, file).suffix.lower() in self.image_types
             ]
             all_files += files
 
