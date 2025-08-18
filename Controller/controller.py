@@ -74,7 +74,7 @@ class MainController:
             c_time = self.get_creation_time(image)
             existing_folder = self.check_date(c_time, self.model.target_path)
             if not existing_folder:
-                return
+                continue
 
             folder_content = os.listdir(existing_folder)
 
